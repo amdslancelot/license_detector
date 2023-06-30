@@ -1,3 +1,4 @@
+import os
 import argparse
 
 def get_parser():
@@ -18,6 +19,10 @@ def get_parser():
     #                    help='path to build.log'),
     #parser.add_argument('--feature', action='store_true')
     #parser.add_argument('--no-feature', dest='feature', action='store_false')
+    parser.add_argument('action', choices=['license', 'commitment'],
+                        help='***required*** detect LICENSE or COMMITMENT file')
+    parser.add_argument('--package', '-p', nargs='?',
+                        help='looking for specific package')
     parser.add_argument('--file', '-f',
                         help='a list of package names to scan')
     parser.add_argument('--prefix', '-pf',
