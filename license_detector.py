@@ -41,9 +41,17 @@ def scan_license(names, short_pkgname, pkgname):
             print("[MISSING " + t + "] " + pkgname)
 
 def main():
+    if args.prefix:
+        prefix = args.prefix
+        prefix = prefix + "-" if prefix[-1] != "-" else prefix
+    else:
+        prefix = ""
+    if args.filter:
+        filter_prefix = args.filter
+        filter_prefix = filter_prefix + "-" if filter_prefix[-1] != "-" else filter_prefix
+    else:
+        filter_prefix = ""
     filename = args.file
-    prefix = args.prefix
-    filter_prefix = args.filter
     license_names = args.license
 
     fo = open(filename, "r+")

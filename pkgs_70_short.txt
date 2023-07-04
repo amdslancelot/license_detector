@@ -1,0 +1,15 @@
+python-attrs        
+ansible-lint        
+python-openpyxl     
+
+python-pyrsistent   
+ 
+python-pyasn1           
+python-xlwt             
+python-cchardet          
+python-ldap              
+python-python3-openid    
+python-pbr               
+python-typing-extensions 
+python-defusedxml
+ 
