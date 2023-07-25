@@ -12,7 +12,8 @@ export PYTHONPATH="$PYTHONPATH:/root/git/thirdpartygenerator/"
 ```
 
 ## Scan License by RPM Name List
-- Run on the machine which physically store the rpms.
+- ***CAN ONLY*** Run on the machine which physically store the rpms.
+- Only print MISSING licenses msg when NO licenses found at all (not when there's any missing licenses)
 ```
 # python license_detector_by_rpm.py -l license -f <PKGNAME_LIST>.txt -pf python- -fi python39- -rp <PATH_TO_REPO_DIR>
 [MISSING license] python39-cchardet-2.1.7-4.0.1.el8.20230130060220.1eb888b.x86_64.rpm
