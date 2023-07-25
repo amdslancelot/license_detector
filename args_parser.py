@@ -28,6 +28,8 @@ def get_parser():
                         help='A filter(also a prefix) to move the preferred pkg name (starts with the filter prefix) to be picked up first')
     parser.add_argument('-rp', '--rpmpath',
                         help='Path to the physical rpms stored')
+    parser.add_argument('-ssh', '--sshcmd',
+                        help='SSH command to repo server (ssh key need to be setup prior to use this feature)')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='debug mode')
     #parser.set_defaults(feature=True)
