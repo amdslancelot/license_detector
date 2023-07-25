@@ -24,6 +24,7 @@ export PYTHONPATH="$PYTHONPATH:/root/git/thirdpartygenerator/"
 ```
 
 ## Scan License file by Package Name List
+- Only print MISSING licenses msg when NO licenses found at all (not when there's any missing licenses)
 ```
 # python license_detector_by_pkgname.py -l third_party_licenses -f <PKGNAME_LIST>.txt -pf python- -fi python39- -rp <PATH_TO_REPO_DIR> -ssh <SSH_USER>@<REPO_HOSTNAME>
 python39-drf-access-policy has license: third_party_licenses

@@ -22,26 +22,29 @@ def warn(s):
 #===============================================================
 import pkgname_analyzer
 
-def scan_license(license_fnames, pkg, pkgname):
+def scan_license(cmd, license_fnames, short_pkgname, rpmname):
     has_license = False
-    map_missed_license = []
+    l_missed_license = []
     for lname in license_fnames:
         lname = lname
-        cmd = "repoquery --list " + pkg + " | grep -i " + lname
-        debug("[CMD] " + cmd)
-        r = subprocess.getoutput(cmd)
+        cmd_new = cmd + " | grep -i " + lname
+        debug("[CMD] " + cmd_new)
+        r = subprocess.getoutput(cmd_new)
         debug("Scanning for " + lname + ": \n" + r)
 
-        # Judgement to detect if a package doesn't have a license file
-        if lname.lower() in r.lower():
-            #has_license = True
-            print(pkg, "has license:", lname)
+        # If: short_pkgname has any matching license file. Print it.
+        # Else: Add the missing license to l_missed_license
+        if lname in r:
+            has_license = True
+            print(short_pkgname, "has license:", lname)
         else:
-            #map_missed_license.append(lname.upper())
-            print("[MISSING " + t + "] " + pkgname)
-    #if not has_license:
-    #    for t in map_missed_license:
-    #        print("[MISSING " + t + "] " + pkgname)
+            l_missed_license.append(lname)
+
+    # Only print MISSING licenses msg when NO licenses found at all
+    # (not when there's any missing licenses)
+    if not has_license:
+        for t in l_missed_license:
+            print("[MISSING " + t + "] " + rpmname)
 
 def get_full_pkgname_from_repo(partial_name, ssh_cmd, path):
     cmd2 = "ls " + path + " | grep -i " + partial_name
@@ -102,7 +105,7 @@ def main():
         debug("short package name: " + short_pkgname)
         debug("package version: " + pkgver)
        
-        scan_license(license_names, short_pkgname, rpmname)
+        scan_license("repoquery --list " + short_pkgname, license_names, short_pkgname, rpmname)
     fo.close()
 
 if __name__ == "__main__":

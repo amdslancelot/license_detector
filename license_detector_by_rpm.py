@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import subprocess
 import sys
-import third_party_generator
 import args_parser
 parser = args_parser.get_parser()
 args = parser.parse_args()
@@ -22,26 +21,15 @@ def warn(s):
 
 #==============================================================================
 import pkgname_analyzer
+from license_detector_by_pkgname import scan_license
 
-def scan_license_rpm(rpm_stored_path, l_license, rpmname):
+def scan_license_rpm(rpm_stored_path, l_license, pkgname, rpmname):
     if not rpm_stored_path:
         print("[Error] Please provide the path to the physical rpm stored by using --rp")
         exit(1)
     rpm_stored_path = rpm_stored_path + "/" if rpm_stored_path[-1] != "/" else rpm_stored_path
-    has_license = False
-    map_missed_license = []
-    for lname in l_license:
-        lname = lname.lower()
-        cmd = "rpm -qlp " + rpm_stored_path + rpmname + " | grep -i " + lname
-        debug("[CMD] " + cmd)
-        r = subprocess.getoutput(cmd)
-        debug("Scanning for " + lname + ": \n" + r)
 
-        # Judgement to detect if a package doesn't have a license file
-        if lname in r.lower():
-            return True
-        else:
-            print("[MISSING " + lname + "] " + rpmname)
+    scan_license("rpm -qlp " + rpm_stored_path + rpmname, l_license, pkgname, rpmname)
 
 def main():
     if args.prefix:
@@ -81,7 +69,7 @@ def main():
 
     for k,v in map_pkgname.items():
         debug("key: " + k + ", value: " + v)
-        scan_license_rpm(args.rpmpath, license_names, v)
+        scan_license_rpm(args.rpmpath, license_names, pkgname, v)
 
 if __name__ == "__main__":
     main()
