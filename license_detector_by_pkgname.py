@@ -26,7 +26,6 @@ def scan_license(cmd, license_fnames, short_pkgname, rpmname):
     has_license = False
     l_missed_license = []
     for lname in license_fnames:
-        lname = lname
         cmd_new = cmd + " | grep -i " + lname
         debug("[CMD] " + cmd_new)
         r = subprocess.getoutput(cmd_new)

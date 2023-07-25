@@ -21,27 +21,19 @@ def warn(s):
 
 #==============================================================================
 import pkgname_analyzer
+import pkgname_analyzer_helper
 from license_detector_by_pkgname import scan_license
 
-def scan_license_rpm(rpm_stored_path, l_license, pkgname, rpmname):
+def scan_license_rpm(rpm_stored_path, l_license, rpmname):
     if not rpm_stored_path:
         print("[Error] Please provide the path to the physical rpm stored by using --rp")
         exit(1)
     rpm_stored_path = rpm_stored_path + "/" if rpm_stored_path[-1] != "/" else rpm_stored_path
 
+    pkgname = pkgname_analyzer.analyze_pkgname(rpmname, "name")
     scan_license("rpm -qlp " + rpm_stored_path + rpmname, l_license, pkgname, rpmname)
 
 def main():
-    if args.prefix:
-        prefix = args.prefix
-        prefix = prefix + "-" if prefix[-1] != "-" else prefix
-    else:
-        prefix = ""
-    if args.filter:
-        filter_prefix = args.filter
-        filter_prefix = filter_prefix + "-" if filter_prefix[-1] != "-" else filter_prefix
-    else:
-        filter_prefix = ""
     filename = args.file
     license_names = args.license
     map_pkgname = {}
@@ -49,7 +41,7 @@ def main():
     fo = open(filename, "r+")
     lines = fo.readlines()
     for line in lines:
-        full_rpmname = line.replace(prefix, "").replace("\n", "").replace(" ","")
+        full_rpmname = line.replace("\n", "").replace(" ","")
 
         if not full_rpmname.strip():
             continue
@@ -59,17 +51,18 @@ def main():
             continue
 
         pkgname = pkgname_analyzer.analyze_pkgname(full_rpmname, "name")
-        pkgver = pkgname_analyzer.analyze_pkgname(full_rpmname, "version")
+        pkgver = pkgname_analyzer.analyze_pkgname(full_rpmname, "longver")
+        debug("lans1: " + pkgver)
         if pkgname not in map_pkgname.keys():
             map_pkgname[pkgname] = full_rpmname
         else:
-            if pkgver > pkgname_analyzer.analyze_pkgname(map_pkgname[pkgname], "version"):
+            if pkgname_analyzer_helper.is_later_pkg_version(pkgname_analyzer.analyze_pkgname(map_pkgname[pkgname], "longver"), pkgver):
                 map_pkgname[pkgname] = full_rpmname
     fo.close()
 
     for k,v in map_pkgname.items():
         debug("key: " + k + ", value: " + v)
-        scan_license_rpm(args.rpmpath, license_names, pkgname, v)
+        scan_license_rpm(args.rpmpath, license_names, v)
 
 if __name__ == "__main__":
     main()
