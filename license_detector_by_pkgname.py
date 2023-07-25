@@ -20,6 +20,8 @@ def warn(s):
     if is_debug or args.debug:
       print("[WARN] %s" % (s))
 
+#===============================================================
+import pkgname_analyzer
 
 def scan_license(names, short_pkgname, pkgname):
     has_license = False
@@ -70,8 +72,7 @@ def main():
             warn("no packages found: " + args.package)
             exit(0)
         
-        cmd_pkgname = "pkgname_analyzer " + full_pkgname + " name"
-        short_pkgname = subprocess.getoutput(cmd_pkgname)
+        short_pkgname = pkgname_analyzer.analyze_pkgname(full_pkgname, "name")
         debug("short package name: " + short_pkgname)
        
         scan_license(license_names, short_pkgname, full_pkgname)
